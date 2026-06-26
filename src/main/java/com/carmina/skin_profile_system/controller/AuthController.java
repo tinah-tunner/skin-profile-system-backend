@@ -37,15 +37,6 @@ public class AuthController {
     }
 
     // ===============================
-    // GET CURRENT USER PROFILE (SECURE)
-    // ===============================
-    @GetMapping("/me")
-    @PreAuthorize("isAuthenticated()")
-    public LoginResponse getCurrentUser() {
-        return userService.getCurrentUser();
-    }
-
-    // ===============================
     // ADMIN ONLY - GET ALL USERS
     // ===============================
     @GetMapping("/users")
