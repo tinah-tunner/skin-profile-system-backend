@@ -29,6 +29,12 @@ public class Client {
     @Column(length = 2000)
     private String medicalNotes;
 
+    @Column(length = 5000)
+private String beforeImage;
+
+@Column(length = 5000)
+private String afterImage;
+
     // Default Constructor
     public Client() {
     }
