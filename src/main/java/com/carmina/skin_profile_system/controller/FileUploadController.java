@@ -31,6 +31,6 @@ public class FileUploadController {
         file.transferTo(destination);
 
         // return URL
-        return "http://localhost:8080/uploads/" + fileName;
+        return "https://skin-profile-system-backendfinal.onrender.com/uploads/" + fileName;
     }
 }

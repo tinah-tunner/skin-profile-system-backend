@@ -1,15 +1,15 @@
 package com.carmina.skin_profile_system.controller;
 
+import com.carmina.skin_profile_system.dto.ClientRequest;
 import com.carmina.skin_profile_system.entity.Client;
 import com.carmina.skin_profile_system.service.ClientService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/clients")
-@CrossOrigin
+@CrossOrigin(origins = "*")
 public class ClientController {
 
     private final ClientService clientService;
@@ -18,40 +18,35 @@ public class ClientController {
         this.clientService = clientService;
     }
 
+    // ===============================
+    // CREATE CLIENT
+    // ===============================
     @PostMapping
-    public Client createClient(@RequestBody Client client) {
-        return clientService.createClient(client);
+    public Client createClient(@RequestBody ClientRequest request) {
+        return clientService.createClient(request);
     }
 
+    // ===============================
+    // GET ALL CLIENTS
+    // ===============================
     @GetMapping
-    public List<Client> getAllClients() {
+    public List<Client> getClients() {
         return clientService.getAllClients();
     }
 
+    // ===============================
+    // GET CLIENT BY ID
+    // ===============================
     @GetMapping("/{id}")
     public Client getClient(@PathVariable Long id) {
-        return clientService.getClientById(id);
+        return clientService.getClient(id);
     }
 
-    @PutMapping("/{id}")
-    public Client updateClient(@PathVariable Long id,
-                               @RequestBody Client client) {
-        return clientService.updateClient(id, client);
-    }
-
+    // ===============================
+    // DELETE CLIENT
+    // ===============================
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteClient(@PathVariable Long id) {
+    public void deleteClient(@PathVariable Long id) {
         clientService.deleteClient(id);
-        return ResponseEntity.ok("Client deleted successfully");
-    }
-
-    @GetMapping("/search")
-    public List<Client> search(@RequestParam String name) {
-        return clientService.searchClients(name);
-    }
-
-    @GetMapping("/profiles")
-    public List<Client> getProfiles() {
-        return clientService.getAllClients();
     }
 }

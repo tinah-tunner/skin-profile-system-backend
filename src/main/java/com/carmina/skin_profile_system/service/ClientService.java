@@ -1,10 +1,10 @@
-
 package com.carmina.skin_profile_system.service;
 
+import com.carmina.skin_profile_system.dto.ClientRequest;
 import com.carmina.skin_profile_system.entity.Client;
 import com.carmina.skin_profile_system.repository.ClientRepository;
 import org.springframework.stereotype.Service;
-import com.carmina.skin_profile_system.exception.ResourceNotFoundException;
+
 import java.util.List;
 
 @Service
@@ -16,45 +16,70 @@ public class ClientService {
         this.clientRepository = clientRepository;
     }
 
-    public Client createClient(Client client) {
-        return clientRepository.save(client);
+    // ===============================
+    // CREATE CLIENT
+    // ===============================
+    public Client createClient(ClientRequest request) {
+
+        if (clientRepository.existsByEmail(request.getEmail())) {
+            throw new RuntimeException("A client with this email already exists.");
+        }
+
+        Client client = new Client();
+
+        client.setFirstName(request.getFirstName());
+        client.setLastName(request.getLastName());
+        client.setEmail(request.getEmail());
+        client.setPhoneNumber(request.getPhoneNumber());
+        client.setDateOfBirth(request.getDateOfBirth());
+
+        client.setGender(request.getGender());
+
+        client.setAddress(request.getAddress());
+        client.setEmergencyContact(request.getEmergencyContact());
+
+        client.setSkinType(request.getSkinType());
+        client.setSkinConcerns(request.getSkinConcerns());
+
+        client.setAllergies(request.getAllergies());
+        client.setCurrentMedication(request.getCurrentMedication());
+        client.setMedicalConditions(request.getMedicalConditions());
+
+        client.setTherapistNotes(request.getTherapistNotes());
+
+        Client savedClient = clientRepository.save(client);
+
+        savedClient.setClientNumber(
+                String.format("BK-%06d", savedClient.getId())
+        );
+
+        return clientRepository.save(savedClient);
     }
 
+    // ===============================
+    // GET ALL CLIENTS
+    // ===============================
     public List<Client> getAllClients() {
         return clientRepository.findAll();
     }
 
-    public Client getClientById(Long id) {
+    // ===============================
+    // GET CLIENT BY ID
+    // ===============================
+    public Client getClient(Long id) {
+
         return clientRepository.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Client not found with id: " + id
-                        ));
+                        new RuntimeException("Client not found."));
     }
 
-    public Client updateClient(Long id, Client updated) {
-
-        Client client = getClientById(id);
-
-        client.setFirstName(updated.getFirstName());
-        client.setLastName(updated.getLastName());
-        client.setAge(updated.getAge());
-        client.setPhone(updated.getPhone());
-        client.setEmail(updated.getEmail());
-
-        // Only keep these if they exist in Client.java
-        client.setSkinType(updated.getSkinType());
-        client.setAllergies(updated.getAllergies());
-        client.setMedicalNotes(updated.getMedicalNotes());
-
-        return clientRepository.save(client);
-    }
-
+    // ===============================
+    // DELETE CLIENT
+    // ===============================
     public void deleteClient(Long id) {
-        clientRepository.deleteById(id);
-    }
 
-    public List<Client> searchClients(String name) {
-        return clientRepository.findByFirstNameContainingIgnoreCase(name);
+        Client client = getClient(id);
+
+        clientRepository.delete(client);
     }
 }

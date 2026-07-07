@@ -1,7 +1,11 @@
 package com.carmina.skin_profile_system.entity;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "clients")
@@ -11,61 +15,63 @@ public class Client {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
+    private String clientNumber;
+
     private String firstName;
+
     private String lastName;
 
-    private int age;
-
-    private String phone;
+    @Column(unique = true)
     private String email;
 
-    private LocalDate firstConsultationDate;
+    private String phoneNumber;
 
-    private String skinType;
+    private LocalDate dateOfBirth;
 
-    @Column(length = 1000)
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
+    private String address;
+
+    private String emergencyContact;
+
+    @Enumerated(EnumType.STRING)
+    private SkinType skinType;
+
+    @ElementCollection(targetClass = SkinConcern.class)
+    @CollectionTable(
+            name = "client_skin_concerns",
+            joinColumns = @JoinColumn(name = "client_id")
+    )
+    @Enumerated(EnumType.STRING)
+    @Column(name = "skin_concern")
+    private Set<SkinConcern> skinConcerns = new HashSet<>();
+
     private String allergies;
 
-    @Column(length = 2000)
-    private String medicalNotes;
+    private String currentMedication;
 
-    @Column(length = 5000)
-private String beforeImage;
+    private String medicalConditions;
 
-@Column(length = 5000)
-private String afterImage;
+    @Column(length = 3000)
+    private String therapistNotes;
 
-    // Default Constructor
+    private LocalDateTime createdAt = LocalDateTime.now();
+
     public Client() {
     }
-
-    // All Arguments Constructor
-    public Client(Long id, String firstName, String lastName, int age,
-                  String phone, String email,
-                  LocalDate firstConsultationDate,
-                  String skinType, String allergies,
-                  String medicalNotes) {
-
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.age = age;
-        this.phone = phone;
-        this.email = email;
-        this.firstConsultationDate = firstConsultationDate;
-        this.skinType = skinType;
-        this.allergies = allergies;
-        this.medicalNotes = medicalNotes;
-    }
-
-    // Getters and Setters
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public String getClientNumber() {
+        return clientNumber;
+    }
+
+    public void setClientNumber(String clientNumber) {
+        this.clientNumber = clientNumber;
     }
 
     public String getFirstName() {
@@ -84,22 +90,6 @@ private String afterImage;
         this.lastName = lastName;
     }
 
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -108,20 +98,60 @@ private String afterImage;
         this.email = email;
     }
 
-    public LocalDate getFirstConsultationDate() {
-        return firstConsultationDate;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setFirstConsultationDate(LocalDate firstConsultationDate) {
-        this.firstConsultationDate = firstConsultationDate;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
-    public String getSkinType() {
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getEmergencyContact() {
+        return emergencyContact;
+    }
+
+    public void setEmergencyContact(String emergencyContact) {
+        this.emergencyContact = emergencyContact;
+    }
+
+    public SkinType getSkinType() {
         return skinType;
     }
 
-    public void setSkinType(String skinType) {
+    public void setSkinType(SkinType skinType) {
         this.skinType = skinType;
+    }
+
+    public Set<SkinConcern> getSkinConcerns() {
+        return skinConcerns;
+    }
+
+    public void setSkinConcerns(Set<SkinConcern> skinConcerns) {
+        this.skinConcerns = skinConcerns;
     }
 
     public String getAllergies() {
@@ -132,11 +162,31 @@ private String afterImage;
         this.allergies = allergies;
     }
 
-    public String getMedicalNotes() {
-        return medicalNotes;
+    public String getCurrentMedication() {
+        return currentMedication;
     }
 
-    public void setMedicalNotes(String medicalNotes) {
-        this.medicalNotes = medicalNotes;
+    public void setCurrentMedication(String currentMedication) {
+        this.currentMedication = currentMedication;
+    }
+
+    public String getMedicalConditions() {
+        return medicalConditions;
+    }
+
+    public void setMedicalConditions(String medicalConditions) {
+        this.medicalConditions = medicalConditions;
+    }
+
+    public String getTherapistNotes() {
+        return therapistNotes;
+    }
+
+    public void setTherapistNotes(String therapistNotes) {
+        this.therapistNotes = therapistNotes;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 }

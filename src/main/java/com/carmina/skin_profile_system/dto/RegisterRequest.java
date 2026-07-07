@@ -10,6 +10,16 @@ public class RegisterRequest {
     public RegisterRequest() {
     }
 
+    // Full Name
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    // Email
     public String getEmail() {
         return email;
     }
@@ -18,6 +28,7 @@ public class RegisterRequest {
         this.email = email;
     }
 
+    // Password
     public String getPassword() {
         return password;
     }
@@ -26,6 +37,7 @@ public class RegisterRequest {
         this.password = password;
     }
 
+    // Role
     public String getRole() {
         return role;
     }
