@@ -3,13 +3,12 @@ package com.carmina.skin_profile_system.service;
 import com.carmina.skin_profile_system.dto.LoginRequest;
 import com.carmina.skin_profile_system.dto.LoginResponse;
 import com.carmina.skin_profile_system.dto.RegisterRequest;
+import com.carmina.skin_profile_system.entity.Role;
 import com.carmina.skin_profile_system.entity.User;
 import com.carmina.skin_profile_system.repository.UserRepository;
 import com.carmina.skin_profile_system.security.JwtService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.carmina.skin_profile_system.entity.Role;
-
 
 import java.util.List;
 import java.util.Optional;
@@ -17,116 +16,113 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
 
-private final UserRepository userRepository;
-private final PasswordEncoder passwordEncoder;
-private final JwtService jwtService;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-public UserServiceImpl(
-        UserRepository userRepository,
-        PasswordEncoder passwordEncoder,
-        JwtService jwtService
-) {
-    this.userRepository = userRepository;
-    this.passwordEncoder = passwordEncoder;
-    this.jwtService = jwtService;
-}
-
-@Override
-public LoginResponse register(RegisterRequest request) {
-
-    User user = new User();
-
-    user.setEmail(request.getEmail());
-
-    user.setPassword(
-            passwordEncoder.encode(request.getPassword())
-    );
-
-    user.setRole(Role.valueOf(request.getRole().toUpperCase()));
-
-    User savedUser = userRepository.save(user);
-
-    String token = jwtService.generateToken(
-            savedUser.getEmail(),
-            savedUser.getRole().name()
-    );
-
-    return new LoginResponse(
-            token,
-            savedUser.getRole().name(),
-            savedUser.getEmail()
-    );
-}
-
-@Override
-public User createUser(User user) {
-
-    user.setPassword(
-            passwordEncoder.encode(user.getPassword())
-    );
-
-    return userRepository.save(user);
-}
-
-@Override
-public LoginResponse login(LoginRequest request) {
-
-    User user = userRepository.findByEmail(request.getEmail())
-            .orElseThrow(() ->
-                    new RuntimeException("Invalid credentials"));
-
-    if (!passwordEncoder.matches(
-            request.getPassword(),
-            user.getPassword())) {
-
-        throw new RuntimeException("Invalid credentials");
+    public UserServiceImpl(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            JwtService jwtService
+    ) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
-    String token = jwtService.generateToken(
-            user.getEmail(),
-            user.getRole().name()
-    );
+    @Override
+    public LoginResponse register(RegisterRequest request) {
 
-    return new LoginResponse(
-            token,
-            user.getRole().name(),
-            user.getEmail()
-    );
-}
+        User user = new User();
 
-@Override
-public List<User> getAllUsers() {
-    return userRepository.findAll();
-}
+        user.setFullName(request.getFullName());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(Role.valueOf(request.getRole().toUpperCase()));
 
-@Override
-public Optional<User> getUserById(Long id) {
-    return userRepository.findById(id);
-}
+        User savedUser = userRepository.save(user);
 
+        String token = jwtService.generateToken(
+                savedUser.getEmail(),
+                savedUser.getRole().name()
+        );
 
-@Override
-public User updateUser(Long id, User user) {
-
-    User existingUser = userRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("User not found"));
-
-    existingUser.setEmail(user.getEmail());
-
-    if (user.getPassword() != null && !user.getPassword().isEmpty()) {
-        existingUser.setPassword(
-                passwordEncoder.encode(user.getPassword())
+        return new LoginResponse(
+                savedUser.getId(),
+                savedUser.getFullName(),
+                savedUser.getEmail(),
+                savedUser.getRole().name(),
+                token
         );
     }
 
-    existingUser.setRole(user.getRole());
+    @Override
+    public User createUser(User user) {
 
-    return userRepository.save(existingUser);
-}
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-@Override
-public void deleteUser(Long id) {
-    userRepository.deleteById(id);
-}
+        return userRepository.save(user);
+    }
 
+    @Override
+    public LoginResponse login(LoginRequest request) {
+
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
+
+        if (!passwordEncoder.matches(
+                request.getPassword(),
+                user.getPassword())) {
+
+            throw new RuntimeException("Invalid credentials");
+        }
+
+        String token = jwtService.generateToken(
+                user.getEmail(),
+                user.getRole().name()
+        );
+
+        return new LoginResponse(
+                user.getId(),
+                user.getFullName(),
+                user.getEmail(),
+                user.getRole().name(),
+                token
+        );
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    public Optional<User> getUserById(Long id) {
+        return userRepository.findById(id);
+    }
+
+    @Override
+    public User updateUser(Long id, User user) {
+
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        existingUser.setFullName(user.getFullName());
+        existingUser.setEmail(user.getEmail());
+
+        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+            existingUser.setPassword(
+                    passwordEncoder.encode(user.getPassword())
+            );
+        }
+
+        existingUser.setRole(user.getRole());
+
+        return userRepository.save(existingUser);
+    }
+
+    @Override
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
+    }
 }

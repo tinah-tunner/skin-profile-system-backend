@@ -10,6 +10,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String fullName;
+
     private String email;
 
     private String password;
@@ -17,7 +19,8 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    public User() {}
+    public User() {
+    }
 
     public Long getId() {
         return id;
@@ -27,6 +30,16 @@ public class User {
         this.id = id;
     }
 
+    // Full Name
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    // Email
     public String getEmail() {
         return email;
     }
@@ -35,6 +48,7 @@ public class User {
         this.email = email;
     }
 
+    // Password
     public String getPassword() {
         return password;
     }
@@ -43,6 +57,7 @@ public class User {
         this.password = password;
     }
 
+    // Role
     public Role getRole() {
         return role;
     }
