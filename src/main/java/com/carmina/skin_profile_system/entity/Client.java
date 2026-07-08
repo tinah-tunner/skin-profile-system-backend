@@ -54,6 +54,10 @@ public class Client {
 
     private String medicalConditions;
 
+    private String beforeImage;
+
+private String afterImage;
+
     @Column(length = 3000)
     private String therapistNotes;
 
@@ -177,6 +181,22 @@ public class Client {
     public void setMedicalConditions(String medicalConditions) {
         this.medicalConditions = medicalConditions;
     }
+
+    public String getBeforeImage() {
+    return beforeImage;
+}
+
+public void setBeforeImage(String beforeImage) {
+    this.beforeImage = beforeImage;
+}
+
+public String getAfterImage() {
+    return afterImage;
+}
+
+public void setAfterImage(String afterImage) {
+    this.afterImage = afterImage;
+}
 
     public String getTherapistNotes() {
         return therapistNotes;

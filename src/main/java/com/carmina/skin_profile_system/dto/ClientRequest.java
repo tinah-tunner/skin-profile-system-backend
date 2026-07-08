@@ -27,6 +27,8 @@ public class ClientRequest {
     private String allergies;
     private String currentMedication;
     private String medicalConditions;
+    private String beforeImage;
+private String afterImage;
     private String therapistNotes;
 
     public ClientRequest() {}
@@ -69,6 +71,22 @@ public class ClientRequest {
 
     public String getMedicalConditions() { return medicalConditions; }
     public void setMedicalConditions(String medicalConditions) { this.medicalConditions = medicalConditions; }
+
+    public String getBeforeImage() {
+    return beforeImage;
+}
+
+public void setBeforeImage(String beforeImage) {
+    this.beforeImage = beforeImage;
+}
+
+public String getAfterImage() {
+    return afterImage;
+}
+
+public void setAfterImage(String afterImage) {
+    this.afterImage = afterImage;
+}
 
     public String getTherapistNotes() { return therapistNotes; }
     public void setTherapistNotes(String therapistNotes) { this.therapistNotes = therapistNotes; }

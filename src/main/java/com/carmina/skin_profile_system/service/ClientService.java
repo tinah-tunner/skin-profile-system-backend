@@ -46,6 +46,8 @@ public class ClientService {
         client.setMedicalConditions(request.getMedicalConditions());
 
         client.setTherapistNotes(request.getTherapistNotes());
+        client.setBeforeImage(request.getBeforeImage());
+client.setAfterImage(request.getAfterImage());
 
         Client savedClient = clientRepository.save(client);
 
