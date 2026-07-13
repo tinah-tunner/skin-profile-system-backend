@@ -10,12 +10,16 @@ import java.util.List;
 @Service
 public class ClientService {
 
-    private final ClientRepository clientRepository;
+   private final ClientRepository clientRepository;
+private final NotificationService notificationService;
 
-    public ClientService(ClientRepository clientRepository) {
-        this.clientRepository = clientRepository;
-    }
-
+public ClientService(
+        ClientRepository clientRepository,
+        NotificationService notificationService
+) {
+    this.clientRepository = clientRepository;
+    this.notificationService = notificationService;
+}
     // ===============================
     // CREATE CLIENT
     // ===============================
@@ -55,7 +59,17 @@ client.setAfterImage(request.getAfterImage());
                 String.format("BK-%06d", savedClient.getId())
         );
 
-        return clientRepository.save(savedClient);
+        Client finalClient = clientRepository.save(savedClient);
+
+notificationService.create(
+        "Client",
+        "New client registered: "
+                + finalClient.getFirstName()
+                + " "
+                + finalClient.getLastName()
+);
+
+return finalClient;
     }
 
     // ===============================
@@ -81,6 +95,16 @@ client.setAfterImage(request.getAfterImage());
     public void deleteClient(Long id) {
 
         Client client = getClient(id);
+
+        notificationService.create(
+        "Client",
+        "Client deleted: "
+                + client.getFirstName()
+                + " "
+                + client.getLastName()
+);
+
+clientRepository.delete(client);
 
         clientRepository.delete(client);
     }

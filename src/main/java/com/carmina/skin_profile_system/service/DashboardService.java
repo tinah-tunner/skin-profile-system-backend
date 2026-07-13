@@ -27,13 +27,12 @@ public class DashboardService {
     public DashboardResponse getDashboardStats() {
 
         long clients = userRepository.countByRole(Role.CLIENT);
-        long therapists = userRepository.countByRole(Role.THERAPIST);
         long bookings = bookingRepository.count();
         long products = productRepository.count();
 
+        // Therapist count removed
         return new DashboardResponse(
                 clients,
-                therapists,
                 bookings,
                 products
         );

@@ -2,7 +2,6 @@ package com.carmina.skin_profile_system.service;
 
 import com.carmina.skin_profile_system.entity.Notification;
 import com.carmina.skin_profile_system.repository.NotificationRepository;
-
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,18 +16,18 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public Notification create(String message, String role) {
+    public Notification create(String type, String message) {
 
-        Notification n = new Notification();
-        n.setMessage(message);
-        n.setRole(role);
-        n.setReadStatus(false);
+        Notification notification = new Notification();
 
-        return repo.save(n);
+        notification.setType(type);
+        notification.setMessage(message);
+
+        return repo.save(notification);
     }
 
     @Override
-    public List<Notification> getByRole(String role) {
-        return repo.findByRole(role);
+    public List<Notification> getAll() {
+        return repo.findAllByOrderByCreatedAtDesc();
     }
 }

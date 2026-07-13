@@ -17,10 +17,8 @@ public class NotificationController {
         this.notificationService = notificationService;
     }
 
-    @GetMapping("/{role}")
-    public List<Notification> getNotificationsByRole(
-            @PathVariable String role) {
-
-        return notificationService.getByRole(role);
+    @GetMapping
+    public List<Notification> getAllNotifications() {
+        return notificationService.getAll();
     }
 }

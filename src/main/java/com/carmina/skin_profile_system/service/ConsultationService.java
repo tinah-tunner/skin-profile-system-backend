@@ -11,14 +11,27 @@ import java.util.List;
 public class ConsultationService {
 
     private final ConsultationRepository repo;
+private final NotificationService notificationService;
 
-    public ConsultationService(ConsultationRepository repo) {
-        this.repo = repo;
-    }
+public ConsultationService(
+        ConsultationRepository repo,
+        NotificationService notificationService
+) {
+    this.repo = repo;
+    this.notificationService = notificationService;
+}
+  
+  public Consultation create(Consultation c) {
 
-    public Consultation create(Consultation c) {
-        return repo.save(c);
-    }
+    Consultation consultation = repo.save(c);
+
+    notificationService.create(
+            "Consultation",
+            "Consultation saved successfully."
+    );
+
+    return consultation;
+}
 
     public List<Consultation> getAll() {
         return repo.findAll();
@@ -28,15 +41,29 @@ public class ConsultationService {
         return repo.findById(id).orElse(null);
     }
 
-    public Consultation update(Long id, Consultation c) {
-        c.setId(id);
-        return repo.save(c);
-    }
+  public Consultation update(Long id, Consultation c) {
 
-    public void delete(Long id) {
-        repo.deleteById(id);
-    }
+    c.setId(id);
 
+    Consultation consultation = repo.save(c);
+
+    notificationService.create(
+            "Consultation",
+            "Consultation updated successfully."
+    );
+
+    return consultation;
+}
+
+   public void delete(Long id) {
+
+    notificationService.create(
+            "Consultation",
+            "A consultation has been deleted."
+    );
+
+    repo.deleteById(id);
+}
     // FILTER METHODS
 
     public List<Consultation> byClient(Long clientId) {

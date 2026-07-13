@@ -38,8 +38,7 @@ public class UserServiceImpl implements UserService {
         user.setFullName(request.getFullName());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(Role.valueOf(request.getRole().toUpperCase()));
-
+user.setRole(Role.CLIENT);
         User savedUser = userRepository.save(user);
 
         String token = jwtService.generateToken(

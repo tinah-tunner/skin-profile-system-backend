@@ -6,7 +6,8 @@ import java.util.List;
 
 public interface NotificationService {
 
-    Notification create(String message, String role);
+    Notification create(String type, String message);
 
-    List<Notification> getByRole(String role);
+    List<Notification> getAll();
+
 }
