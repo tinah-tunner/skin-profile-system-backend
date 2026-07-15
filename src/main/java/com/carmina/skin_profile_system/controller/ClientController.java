@@ -4,6 +4,8 @@ import com.carmina.skin_profile_system.dto.ClientRequest;
 import com.carmina.skin_profile_system.entity.Client;
 import com.carmina.skin_profile_system.service.ClientService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
 
 import java.util.List;
 
@@ -18,6 +20,22 @@ public class ClientController {
         this.clientService = clientService;
     }
 
+    @PutMapping("/{id}/images")
+public Client updateClientImages(
+        @PathVariable Long id,
+        @RequestBody ClientRequest request
+) {
+    return clientService.updateClientImages(id, request);
+}
+@PostMapping("/{id}/images")
+public Client uploadImages(
+        @PathVariable Long id,
+        @RequestParam(value = "beforeImage", required = false) MultipartFile beforeImage,
+        @RequestParam(value = "afterImage", required = false) MultipartFile afterImage
+) throws IOException {
+
+    return clientService.uploadImages(id, beforeImage, afterImage);
+}
     // ===============================
     // CREATE CLIENT
     // ===============================

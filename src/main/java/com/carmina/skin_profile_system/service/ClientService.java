@@ -4,22 +4,28 @@ import com.carmina.skin_profile_system.dto.ClientRequest;
 import com.carmina.skin_profile_system.entity.Client;
 import com.carmina.skin_profile_system.repository.ClientRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
 public class ClientService {
 
-   private final ClientRepository clientRepository;
-private final NotificationService notificationService;
+    private final ClientRepository clientRepository;
+    private final NotificationService notificationService;
+    private final ImageUploadService imageUploadService;
 
-public ClientService(
-        ClientRepository clientRepository,
-        NotificationService notificationService
-) {
-    this.clientRepository = clientRepository;
-    this.notificationService = notificationService;
-}
+    public ClientService(
+            ClientRepository clientRepository,
+            NotificationService notificationService,
+            ImageUploadService imageUploadService
+    ) {
+        this.clientRepository = clientRepository;
+        this.notificationService = notificationService;
+        this.imageUploadService = imageUploadService;
+    }
+
     // ===============================
     // CREATE CLIENT
     // ===============================
@@ -36,9 +42,7 @@ public ClientService(
         client.setEmail(request.getEmail());
         client.setPhoneNumber(request.getPhoneNumber());
         client.setDateOfBirth(request.getDateOfBirth());
-
         client.setGender(request.getGender());
-
         client.setAddress(request.getAddress());
         client.setEmergencyContact(request.getEmergencyContact());
 
@@ -50,8 +54,6 @@ public ClientService(
         client.setMedicalConditions(request.getMedicalConditions());
 
         client.setTherapistNotes(request.getTherapistNotes());
-        client.setBeforeImage(request.getBeforeImage());
-client.setAfterImage(request.getAfterImage());
 
         Client savedClient = clientRepository.save(client);
 
@@ -61,15 +63,15 @@ client.setAfterImage(request.getAfterImage());
 
         Client finalClient = clientRepository.save(savedClient);
 
-notificationService.create(
-        "Client",
-        "New client registered: "
-                + finalClient.getFirstName()
-                + " "
-                + finalClient.getLastName()
-);
+        notificationService.create(
+                "Client",
+                "New client registered: "
+                        + finalClient.getFirstName()
+                        + " "
+                        + finalClient.getLastName()
+        );
 
-return finalClient;
+        return finalClient;
     }
 
     // ===============================
@@ -90,6 +92,70 @@ return finalClient;
     }
 
     // ===============================
+    // UPDATE IMAGE URLS
+    // ===============================
+    public Client updateClientImages(Long id, ClientRequest request) {
+
+        Client client = getClient(id);
+
+        if (request.getBeforeImage() != null && !request.getBeforeImage().isBlank()) {
+            client.setBeforeImage(request.getBeforeImage());
+        }
+
+        if (request.getAfterImage() != null && !request.getAfterImage().isBlank()) {
+            client.setAfterImage(request.getAfterImage());
+        }
+
+        return clientRepository.save(client);
+    }
+
+    // ===============================
+    // UPLOAD IMAGES TO CLOUDINARY
+    // ===============================
+    public Client uploadImages(
+            Long id,
+            MultipartFile beforeImage,
+            MultipartFile afterImage
+    ) throws IOException {
+
+        Client client = getClient(id);
+
+        if (beforeImage != null && !beforeImage.isEmpty()) {
+            String beforeUrl = imageUploadService.uploadImage(beforeImage);
+            client.setBeforeImage(beforeUrl);
+        }
+
+        if (afterImage != null && !afterImage.isEmpty()) {
+            String afterUrl = imageUploadService.uploadImage(afterImage);
+            client.setAfterImage(afterUrl);
+        }
+
+        return clientRepository.save(client);
+    }
+
+    // ===============================
+    // UPDATE IMAGE URLS MANUALLY
+    // ===============================
+    public Client updateImages(
+            Long id,
+            String beforeImage,
+            String afterImage
+    ) {
+
+        Client client = getClient(id);
+
+        if (beforeImage != null && !beforeImage.isBlank()) {
+            client.setBeforeImage(beforeImage);
+        }
+
+        if (afterImage != null && !afterImage.isBlank()) {
+            client.setAfterImage(afterImage);
+        }
+
+        return clientRepository.save(client);
+    }
+
+    // ===============================
     // DELETE CLIENT
     // ===============================
     public void deleteClient(Long id) {
@@ -97,14 +163,12 @@ return finalClient;
         Client client = getClient(id);
 
         notificationService.create(
-        "Client",
-        "Client deleted: "
-                + client.getFirstName()
-                + " "
-                + client.getLastName()
-);
-
-clientRepository.delete(client);
+                "Client",
+                "Client deleted: "
+                        + client.getFirstName()
+                        + " "
+                        + client.getLastName()
+        );
 
         clientRepository.delete(client);
     }
