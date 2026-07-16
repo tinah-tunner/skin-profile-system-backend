@@ -61,6 +61,12 @@ private String afterImage;
     @Column(length = 3000)
     private String therapistNotes;
 
+
+
+private LocalDateTime updatedAt;
+
+private String updatedBy;
+
     private LocalDateTime createdAt = LocalDateTime.now();
 
     public Client() {
@@ -209,4 +215,19 @@ public void setAfterImage(String afterImage) {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
+    public LocalDateTime getUpdatedAt() {
+    return updatedAt;
+}
+
+public void setUpdatedAt(LocalDateTime updatedAt) {
+    this.updatedAt = updatedAt;
+}
+
+public String getUpdatedBy() {
+    return updatedBy;
+}
+
+public void setUpdatedBy(String updatedBy) {
+    this.updatedBy = updatedBy;
+}
 }

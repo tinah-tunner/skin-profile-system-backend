@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -25,6 +26,22 @@ public class ClientService {
         this.notificationService = notificationService;
         this.imageUploadService = imageUploadService;
     }
+
+    public LocalDateTime getUpdatedAt() {
+    return updatedAt;
+}
+
+public void setUpdatedAt(LocalDateTime updatedAt) {
+    this.updatedAt = updatedAt;
+}
+
+public String getUpdatedBy() {
+    return updatedBy;
+}
+
+public void setUpdatedBy(String updatedBy) {
+    this.updatedBy = updatedBy;
+}
 
     // ===============================
     // CREATE CLIENT
@@ -172,4 +189,35 @@ public class ClientService {
 
         clientRepository.delete(client);
     }
+
+   public Client updateClient(Long id, ClientRequest request){
+    Client client = getClient(id);
+
+    client.setFirstName(request.getFirstName());
+    client.setLastName(request.getLastName());
+    client.setEmail(request.getEmail());
+    client.setPhoneNumber(request.getPhoneNumber());
+    client.setDateOfBirth(request.getDateOfBirth());
+    client.setGender(request.getGender());
+    client.setAddress(request.getAddress());
+    client.setEmergencyContact(request.getEmergencyContact());
+
+    client.setSkinType(request.getSkinType());
+    client.setSkinConcerns(request.getSkinConcerns());
+
+    client.setAllergies(request.getAllergies());
+    client.setCurrentMedication(request.getCurrentMedication());
+    client.setMedicalConditions(request.getMedicalConditions());
+    client.setTherapistNotes(request.getTherapistNotes());
+
+    client.setUpdatedAt(LocalDateTime.now());
+    client.setUpdatedBy("Therapist");
+
+    notificationService.create(
+        "Client",
+        "Client updated successfully."
+    );
+
+    return clientRepository.save(client);
+} 
 }

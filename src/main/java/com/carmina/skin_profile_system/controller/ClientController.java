@@ -27,6 +27,15 @@ public Client updateClientImages(
 ) {
     return clientService.updateClientImages(id, request);
 }
+@PutMapping("/{id}")
+public Client updateClient(
+        @PathVariable Long id,
+        @RequestBody ClientRequest request
+) {
+    return clientService.updateClient(id, request);
+}
+
+
 @PostMapping("/{id}/images")
 public Client uploadImages(
         @PathVariable Long id,

@@ -85,4 +85,5 @@ public ConsultationService(
     public List<Consultation> byDateRange(LocalDate start, LocalDate end) {
         return repo.findByConsultationDateBetween(start, end);
     }
+
 }
