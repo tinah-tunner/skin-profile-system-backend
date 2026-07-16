@@ -27,21 +27,7 @@ public class ClientService {
         this.imageUploadService = imageUploadService;
     }
 
-    public LocalDateTime getUpdatedAt() {
-    return updatedAt;
-}
-
-public void setUpdatedAt(LocalDateTime updatedAt) {
-    this.updatedAt = updatedAt;
-}
-
-public String getUpdatedBy() {
-    return updatedBy;
-}
-
-public void setUpdatedBy(String updatedBy) {
-    this.updatedBy = updatedBy;
-}
+    
 
     // ===============================
     // CREATE CLIENT
