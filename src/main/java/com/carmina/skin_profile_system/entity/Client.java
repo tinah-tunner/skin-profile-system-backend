@@ -54,9 +54,12 @@ public class Client {
 
     private String medicalConditions;
 
-    private String beforeImage;
-
-private String afterImage;
+  @OneToMany(
+        mappedBy = "client",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true
+)
+private Set<Photo> photos = new HashSet<>();
 
     @Column(length = 3000)
     private String therapistNotes;
@@ -188,20 +191,12 @@ private String updatedBy;
         this.medicalConditions = medicalConditions;
     }
 
-    public String getBeforeImage() {
-    return beforeImage;
+public Set<Photo> getPhotos() {
+    return photos;
 }
 
-public void setBeforeImage(String beforeImage) {
-    this.beforeImage = beforeImage;
-}
-
-public String getAfterImage() {
-    return afterImage;
-}
-
-public void setAfterImage(String afterImage) {
-    this.afterImage = afterImage;
+public void setPhotos(Set<Photo> photos) {
+    this.photos = photos;
 }
 
     public String getTherapistNotes() {

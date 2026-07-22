@@ -5,6 +5,8 @@ import com.carmina.skin_profile_system.entity.Client;
 import com.carmina.skin_profile_system.repository.ClientRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import com.carmina.skin_profile_system.entity.Photo;
+import com.carmina.skin_profile_system.repository.PhotoRepository;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -16,18 +18,19 @@ public class ClientService {
     private final ClientRepository clientRepository;
     private final NotificationService notificationService;
     private final ImageUploadService imageUploadService;
+    private final PhotoRepository photoRepository;
 
     public ClientService(
-            ClientRepository clientRepository,
-            NotificationService notificationService,
-            ImageUploadService imageUploadService
-    ) {
-        this.clientRepository = clientRepository;
-        this.notificationService = notificationService;
-        this.imageUploadService = imageUploadService;
-    }
-
-    
+        ClientRepository clientRepository,
+        NotificationService notificationService,
+        ImageUploadService imageUploadService,
+        PhotoRepository photoRepository
+) {
+    this.clientRepository = clientRepository;
+    this.notificationService = notificationService;
+    this.imageUploadService = imageUploadService;
+    this.photoRepository = photoRepository;
+}
 
     // ===============================
     // CREATE CLIENT
@@ -95,68 +98,42 @@ public class ClientService {
     }
 
     // ===============================
-    // UPDATE IMAGE URLS
-    // ===============================
-    public Client updateClientImages(Long id, ClientRequest request) {
-
-        Client client = getClient(id);
-
-        if (request.getBeforeImage() != null && !request.getBeforeImage().isBlank()) {
-            client.setBeforeImage(request.getBeforeImage());
-        }
-
-        if (request.getAfterImage() != null && !request.getAfterImage().isBlank()) {
-            client.setAfterImage(request.getAfterImage());
-        }
-
-        return clientRepository.save(client);
-    }
-
-    // ===============================
     // UPLOAD IMAGES TO CLOUDINARY
     // ===============================
-    public Client uploadImages(
-            Long id,
-            MultipartFile beforeImage,
-            MultipartFile afterImage
-    ) throws IOException {
+public Client uploadImages(
+        Long id,
+        MultipartFile beforeImage,
+        MultipartFile afterImage
+) throws IOException {
 
-        Client client = getClient(id);
+    Client client = getClient(id);
 
-        if (beforeImage != null && !beforeImage.isEmpty()) {
-            String beforeUrl = imageUploadService.uploadImage(beforeImage);
-            client.setBeforeImage(beforeUrl);
-        }
+    if (beforeImage != null && !beforeImage.isEmpty()) {
 
-        if (afterImage != null && !afterImage.isEmpty()) {
-            String afterUrl = imageUploadService.uploadImage(afterImage);
-            client.setAfterImage(afterUrl);
-        }
+        String url = imageUploadService.uploadImage(beforeImage);
 
-        return clientRepository.save(client);
+        Photo photo = new Photo();
+        photo.setClient(client);
+        photo.setImageUrl(url);
+        photo.setPhotoType("BEFORE");
+
+        photoRepository.save(photo);
     }
 
-    // ===============================
-    // UPDATE IMAGE URLS MANUALLY
-    // ===============================
-    public Client updateImages(
-            Long id,
-            String beforeImage,
-            String afterImage
-    ) {
+    if (afterImage != null && !afterImage.isEmpty()) {
 
-        Client client = getClient(id);
+        String url = imageUploadService.uploadImage(afterImage);
 
-        if (beforeImage != null && !beforeImage.isBlank()) {
-            client.setBeforeImage(beforeImage);
-        }
+        Photo photo = new Photo();
+        photo.setClient(client);
+        photo.setImageUrl(url);
+        photo.setPhotoType("AFTER");
 
-        if (afterImage != null && !afterImage.isBlank()) {
-            client.setAfterImage(afterImage);
-        }
-
-        return clientRepository.save(client);
+        photoRepository.save(photo);
     }
+
+    return client;
+}
 
     // ===============================
     // DELETE CLIENT
