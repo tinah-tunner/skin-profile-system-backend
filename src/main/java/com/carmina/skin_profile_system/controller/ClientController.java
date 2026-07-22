@@ -20,13 +20,7 @@ public class ClientController {
         this.clientService = clientService;
     }
 
-    @PutMapping("/{id}/images")
-public Client updateClientImages(
-        @PathVariable Long id,
-        @RequestBody ClientRequest request
-) {
-    return clientService.updateClientImages(id, request);
-}
+
 @PutMapping("/{id}")
 public Client updateClient(
         @PathVariable Long id,
